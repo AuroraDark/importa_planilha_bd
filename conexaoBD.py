@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import pyodbc
 import pandas as pd
 from datetime import datetime, date
@@ -7,14 +8,13 @@ from datetime import datetime, date
 # coloca aqui o nome das colunas da planilha / BD
 # é importante que o nome das colunas na planilha sejam iguais
 # às colunas da tabela no BD
-colunas = ["coluna1", "coluna2", "coluna3"]
 tabela = "nome_tabela"
 
 
 # classe de acesso ao bd
 class BD:
 
-    def __init__(self):
+    def __init__(self, colunas):
         # preenche com os dados do BD
         server = 'seu_server'
         database = 'database'
@@ -25,12 +25,14 @@ class BD:
         self.connection = pyodbc.connect(
             'DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
         self.cursor = self.connection.cursor()
+        self.colunas = colunas
+        print(colunas)
 
     # valida se a linha já existe no BD
     # Previne duplicação de dados
     def validacao(self, linha):
-
         inserir = True
+        colunas = self.colunas
         cursor = self.cursor
         sql = "SELECT 1 FROM " + tabela + " WHERE "
 
@@ -45,6 +47,7 @@ class BD:
             else:
                 sql += coluna + " = '" + str(linha[coluna]) + "' "
 
+        print(sql)
         row = cursor.execute(sql)
 
         # se a consulta retornar dados então é por que eles já existem no BD, logo não deverão ser inseridos
@@ -55,6 +58,7 @@ class BD:
 
     # Inserindo dados no BD
     def inserir(self, linha):
+        colunas = self.colunas
         cursor = self.cursor
         connection = self.connection
 
@@ -81,6 +85,7 @@ class BD:
                     sql += "NULL)"
                 else:
                     sql += "'" + str(linha[coluna]) + "')"
-                    
+
+        print(sql)
         cursor.execute(sql)
         connection.commit()

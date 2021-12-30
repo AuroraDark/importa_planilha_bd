@@ -3,8 +3,10 @@ from conexaoBD import BD
 import pandas
 
 # Coleta os dados
-bd = BD()
-df_dados = coleta_planilha.coletar_dados()
+dados = coleta_planilha.coletar_dados()
+df_dados = dados[0]
+bd = BD(colunas=dados[1])
+
 linhasInseridas = 0
 
 # Valida e insere cada linha
