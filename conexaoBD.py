@@ -5,9 +5,7 @@ import pyodbc
 import pandas as pd
 from datetime import datetime, date
 
-# coloca aqui o nome das colunas da planilha / BD
-# é importante que o nome das colunas na planilha sejam iguais
-# às colunas da tabela no BD
+# coloca aqui o nome da tabela
 tabela = "nome_tabela"
 
 
@@ -26,7 +24,6 @@ class BD:
             'DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
         self.cursor = self.connection.cursor()
         self.colunas = colunas
-        print(colunas)
 
     # valida se a linha já existe no BD
     # Previne duplicação de dados
@@ -47,7 +44,6 @@ class BD:
             else:
                 sql += coluna + " = '" + str(linha[coluna]) + "' "
 
-        print(sql)
         row = cursor.execute(sql)
 
         # se a consulta retornar dados então é por que eles já existem no BD, logo não deverão ser inseridos
@@ -86,6 +82,5 @@ class BD:
                 else:
                     sql += "'" + str(linha[coluna]) + "')"
 
-        print(sql)
         cursor.execute(sql)
         connection.commit()
