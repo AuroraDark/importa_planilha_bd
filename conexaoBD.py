@@ -45,7 +45,6 @@ class BD:
             else:
                 sql += coluna + " = '" + str(linha[coluna]) + "' "
 
-        print(sql)
         row = cursor.execute(sql)
 
         # se a consulta retornar dados então é por que eles já existem no BD, logo não deverão ser inseridos
@@ -73,10 +72,15 @@ class BD:
         for coluna in colunas:
             # se não for a última coluna
             if coluna != colunas[(len(colunas) - 1)]:
-                sql += "'" + str(linha[coluna]) + "',"
+                if linha[coluna] is None:
+                    sql += "NULL,"
+                else:
+                    sql += "'" + str(linha[coluna]) + "',"
             else:
-                sql += "'" + str(linha[coluna]) + "')"
-
-        print(sql)
+                if linha[coluna] is None:
+                    sql += "NULL)"
+                else:
+                    sql += "'" + str(linha[coluna]) + "')"
+                    
         cursor.execute(sql)
         connection.commit()
